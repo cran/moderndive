@@ -1,3 +1,7 @@
+# moderndive 0.1.1
+
+Fixed broken url in `?bowl_samples`
+
 # moderndive 0.1.0
 
 * Added three `get_regression_*` functions meant for novice R users/regression fitters that process regression model outputs

@@ -2,7 +2,7 @@ Package: moderndive
 Type: Package
 Title: Accompaniment Package to ModernDive: An Introduction to
         Statistical and Data Sciences via R
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Albert Y.", "Kim", email = "albert.ys.kim@gmail.com", role = "cre"),
     person("Chester", "Ismay", email = "chester.ismay@gmail.com", role = "aut"),
@@ -24,9 +24,9 @@ Imports: magrittr, dplyr, rlang, tibble, janitor, broom (>= 0.4.3),
 RoxygenNote: 6.0.1
 Suggests: testthat, covr, tidyverse, ggplot2
 NeedsCompilation: no
-Packaged: 2018-01-17 03:24:12 UTC; aykim
+Packaged: 2018-01-22 16:28:31 UTC; aykim
 Author: Albert Y. Kim [cre],
   Chester Ismay [aut],
   Andrew Bray [ctb]
 Repository: CRAN
-Date/Publication: 2018-01-22 15:40:29 UTC
+Date/Publication: 2018-01-22 16:38:26 UTC
