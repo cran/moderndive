@@ -1,3 +1,18 @@
+# moderndive 0.5.0
+
+* Modified `vignettes/why-moderndive.Rmd` main vignette
+* Updated `geom_parallel_slopes()` with new arguments:
+    + Use `fullrange=TRUE` to draw regression lines over the entire support of the x-axis (by @wjhopper)
+    + Use `level` to set different level of confidence interval shading (by @echasnovski)
+* Added new function `geom_categorical_model()` for visualizing regression models with one categorical explanatory/predictor variable (by @wjhopper)
+* Add deprecation warning message to `gg_parallel_slopes()` directing users to use `geom_parallel_slopes()` instead (by @mariumtapal)
+
+
+
+***
+
+
+
 # moderndive 0.4.0
 
 * Added `geom_parallel_slopes()` geom extension to `ggplot2` package to plot parallel slopes regression models with one numerical and one categorical variable (this is not possible using `ggplot2::geom_smooth()`). Note this renders `gg_parallel_slopes()` function added in v0.3.0 obsolete.
@@ -6,6 +21,7 @@
 * `get_correlation()` now:
     + Respects `dplyr::group_by()` grouping
     + Can handle missing data by either passing `na.rm = TRUE` argument or by passing standard `stats:cor(use = "complete.obs")` argument via `...`
+
 
 
 ***
@@ -73,4 +89,3 @@ Fixed broken url in `?bowl_samples`
     + `pennies`: 800 pennies to be treated as a population from which to simulate sampling a numerical variable from (`year` of minting)
     + `bowl`: Bowl of 2400 balls of which 900 are red to be treated as a population from which to simulate sampling a categorical variable from (`color`). Also known as the urn sampling framework \url{https://en.wikipedia.org/wiki/Urn_problem}. 
     + `bowl_samples`: data from tactile version of sampling from `bowl` done in class: 10 groups sampled n=50 balls from  and counted the number red [ADD MODERNDIVE LINK]
-

@@ -4,14 +4,15 @@
 \name{evals}
 \alias{evals}
 \title{Teaching evaluations at the UT Austin}
-\format{A data frame with 463 observations corresponding to courses on the following 13 variables.
+\format{
+A data frame with 463 observations corresponding to courses on the following 13 variables.
 \describe{
   \item{ID}{Identification variable for course.}
   \item{prof_ID}{Identification variable for professor. Many professors are included more than once in this dataset.}
   \item{score}{Average professor evaluation score: (1) very unsatisfactory - (5) excellent.}
   \item{age}{Age of professor.}
   \item{bty_avg}{Average beauty rating of professor.}
-  \item{gender}{Gender of professor: female, male.}
+  \item{gender}{Gender of professor (collected as a binary variable at the time of the study): female, male.}
   \item{ethnicity}{Ethnicity of professor: not minority, minority.}
   \item{language}{Language of school where professor received education: English or non-English.}
   \item{rank}{Rank of professor: teaching, tenure track, tenured.}
@@ -20,22 +21,26 @@
   \item{cls_did_eval}{Number of students in class who completed evaluation.}
   \item{cls_students}{Total number of students in class.}
   \item{cls_level}{Class level: lower, upper.}
-}}
+}
+}
 \source{
-Çetinkaya-Rundel M, Morgan KL, Stangl D. 2013. Looking Good on Course Evaluations. CHANCE 26(2). \url{https://chance.amstat.org/2013/04/looking-good/}
+Çetinkaya-Rundel M, Morgan KL, Stangl D. 2013. Looking Good on Course Evaluations. CHANCE 26(2).
 }
 \usage{
 evals
 }
 \description{
-The data are gathered from end of semester student evaluations for a sample of 463 courses taught by  
-94 professors from the University of Texas at Austin. In addition, six 
-students rate the professors' physical appearance. The result is a data frame 
-where each row contains a different course and each column has information on 
-either the course or the professor \url{https://www.openintro.org/stat/data/?data=evals}
+The data are gathered from end of semester student evaluations for a sample of 463 courses taught by
+94 professors from the University of Texas at Austin. In addition, six
+students rate the professors' physical appearance. The result is a data frame
+where each row contains a different course and each column has information on
+either the course or the professor \url{https://www.openintro.org/data/index.php?data=evals}
 }
 \examples{
 library(dplyr)
 glimpse(evals)
+}
+\seealso{
+The data in `evals` is a slight modification of \code{\link[openintro]{evals}}.
 }
 \keyword{datasets}

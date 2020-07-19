@@ -14,8 +14,8 @@ get_regression_table(model, digits = 3, print = FALSE)
 \item{print}{If TRUE, return in print format suitable for R Markdown}
 }
 \value{
-A tibble-formatted regression table along with lower and upper end 
-points of all confidence intervals for all parameters \code{lower_ci} and 
+A tibble-formatted regression table along with lower and upper end
+points of all confidence intervals for all parameters \code{lower_ci} and
 \code{upper_ci}.
 }
 \description{
@@ -33,5 +33,5 @@ mpg_model <- lm(mpg ~ cyl, data = mtcars)
 get_regression_table(mpg_model)
 }
 \seealso{
-\code{\link[broom]{tidy}}, \code{\link{get_regression_points}}, \code{\link{get_regression_summaries}}
+\code{\link[broom:reexports]{tidy}}, \code{\link{get_regression_points}}, \code{\link{get_regression_summaries}}
 }

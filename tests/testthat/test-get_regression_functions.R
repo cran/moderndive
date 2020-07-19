@@ -5,15 +5,15 @@ library(tibble)
 
 # Modify mtcars and run two lm() models
 data(mtcars)
-mtcars <- mtcars %>% 
-  rownames_to_column(var = "automobile") %>% 
+mtcars <- mtcars %>%
+  rownames_to_column(var = "automobile") %>%
   mutate(cyl = as.factor(cyl))
 
 mpg_null <- lm(mpg ~ NULL, data = mtcars)
 mpg_cyl <- lm(mpg ~ cyl, data = mtcars)
 
 # Modify iris and run glm() model
-iris_binary <- iris %>% 
+iris_binary <- iris %>%
   mutate(virginica = Species == "virginica")
 species_glm <- glm(virginica ~ Sepal.Width, data = iris_binary)
 
@@ -78,17 +78,17 @@ test_that("README code works", {
   expect_silent(
     get_regression_points(mpg_mlr_model2)
   )
-  # Case when true observed outcome variable is included and hence we can
-  # compute fitted/predicted values and residuals
+  # newdata case when true observed outcome variable is included and hence we can
+  # compute residuals
   newcars <- slice(mtcars, 1:3)
   expect_silent(
     get_regression_points(mpg_mlr_model2, newdata = newcars)
   )
-  # Case when true observed outcome variable is NOT included and hence we 
-  # CANNOT compute fitted/predicted values and residuals
-  newcars <- slice(mtcars, 1:3) %>% 
+  # newdata case when true observed outcome variable is not included and hence we
+  # cannot compute residuals
+  newcars <- slice(mtcars, 1:3) %>%
     select(-mpg)
-  expect_silent(
+  expect_warning(
     get_regression_points(mpg_mlr_model2, newdata = newcars)
   )
   
@@ -97,7 +97,7 @@ test_that("README code works", {
     get_regression_summaries(mpg_model)
   )
   expect_silent(
-    mpg_model %>% 
+    mpg_model %>%
       get_regression_summaries(digits = 5, print = TRUE)
   )
 })

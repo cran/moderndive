@@ -4,7 +4,8 @@
 \name{house_prices}
 \alias{house_prices}
 \title{House Sales in King County, USA}
-\format{A data frame with 21613 observations on the following 21 variables.
+\format{
+A data frame with 21613 observations on the following 21 variables.
 \describe{
   \item{id}{a notation for a house}
   \item{date}{Date house was sold}
@@ -27,16 +28,17 @@
   \item{long}{Longitude coordinate}
   \item{sqft_living15}{Living room area in 2015 (implies-- some renovations) This might or might not have affected the lotsize area}
   \item{sqft_lot15}{lotSize area in 2015 (implies-- some renovations)}
-}}
+}
+}
 \source{
-Kaggle \url{https://www.kaggle.com/harlfoxem/housesalesprediction}. 
+Kaggle \url{https://www.kaggle.com/harlfoxem/housesalesprediction}.
 Note data is released under a CC0: Public Domain license.
 }
 \usage{
 house_prices
 }
 \description{
-This dataset contains house sale prices for King County, which includes 
+This dataset contains house sale prices for King County, which includes
 Seattle. It includes homes sold between May 2014 and May 2015. This dataset
 was obtained from Kaggle.com \url{https://www.kaggle.com/harlfoxem/housesalesprediction/data}
 }
@@ -45,12 +47,11 @@ library(dplyr)
 library(ggplot2)
 
 # Create variable log of house price
-house_prices <- house_prices \%>\% 
+house_prices <- house_prices \%>\%
   mutate(log_price = log(price))
-  
+
 # Plot histogram of log of house price
 ggplot(house_prices, aes(x = log_price)) +
   geom_histogram()
-
 }
 \keyword{datasets}

@@ -4,14 +4,16 @@
 \name{promotions}
 \alias{promotions}
 \title{Bank manager recommendations based on (binary) gender}
-\format{A data frame with 48 observations on the following 3 variables.
+\format{
+A data frame with 48 observations on the following 3 variables.
 \describe{
   \item{id}{Identification variable used to distinguish rows.}
-  \item{gender}{(binary) gender: a factor with two levels `male` and `female`}
+  \item{gender}{gender (collected as a binary variable at the time of the study): a factor with two levels `male` and `female`}
   \item{decision}{a factor with two levels: `promoted` and `not`}
-}}
+}
+}
 \source{
-Rosen B and Jerdee T. 1974. Influence of sex role stereotypes on personnel 
+Rosen B and Jerdee T. 1974. Influence of sex role stereotypes on personnel
 decisions. Journal of Applied Psychology 59(1):9-14.
 }
 \usage{
@@ -26,6 +28,6 @@ library(dplyr)
 glimpse(promotions)
 }
 \seealso{
-The data in `gender_promotions` is a tidyverse-friendly transformation of \code{\link[openintro]{gender.discrimination}}.
+The data in `promotions` is a slight modification of \code{\link[openintro]{gender_discrimination}}.
 }
 \keyword{datasets}
