@@ -1,3 +1,13 @@
+# moderndive 0.5.1
+
+* Use vdiffr conditionally
+
+
+
+***
+
+
+
 # moderndive 0.5.0
 
 * Modified `vignettes/why-moderndive.Rmd` main vignette
