@@ -7,7 +7,6 @@ knitr::opts_chunk$set(
   echo = TRUE,
   # Figure:
   out.width = "100%",
-  fig.path = "Figures/",
   fig.width = 16 / 2.5,
   fig.height = 9 / 2.5,
   fig.align = "center",
@@ -22,10 +21,8 @@ knitr::opts_chunk$set(
 library(moderndive)
 library(ggplot2)
 library(dplyr)
-library(readr)
 library(knitr)
 library(broom)
-library(viridis)
 
 # Needed packages internally
 library(patchwork)
@@ -38,7 +35,7 @@ if (!knitr::is_html_output()) {
   # Grey theme:
   theme_set(theme_light())
 
-  scale_colour_discrete <- scale_colour_viridis_d
+  scale_colour_discrete <- ggplot2::scale_colour_viridis_d
 }
 
 
@@ -49,7 +46,6 @@ options(width = 70)
 library(moderndive)
 library(ggplot2)
 library(dplyr)
-library(readr)
 library(knitr)
 library(broom)
 
@@ -93,6 +89,9 @@ ggplot(evals, aes(x = age, y = score, color = ethnicity)) +
 
 ## -------------------------------------------------------------------
 get_regression_table(score_model)
+
+## -------------------------------------------------------------------
+get_regression_table(score_model, conf.level = 0.99)
 
 ## -------------------------------------------------------------------
 sqrt(diag(vcov(score_model)))
@@ -144,26 +143,6 @@ ggplot(score_model_points, aes(x = age, y = residual)) +
 ## -------------------------------------------------------------------
 new_prof <- tibble(age = c(39, 42))
 get_regression_points(score_model, newdata = new_prof)
-
-## ---- eval=FALSE----------------------------------------------------
-#  library(readr)
-#  library(dplyr)
-#  library(moderndive)
-#  
-#  # Load in training and test set
-#  train <- read_csv("https://moderndive.com/data/train.csv")
-#  test <- read_csv("https://moderndive.com/data/test.csv")
-#  
-#  # Fit model:
-#  house_model <- lm(SalePrice ~ YrSold, data = train)
-#  
-#  # Make predictions and save in appropriate data frame format:
-#  submission <- house_model %>%
-#    get_regression_points(newdata = test, ID = "Id") %>%
-#    select(Id, SalePrice = SalePrice_hat)
-#  
-#  # Write predictions to csv:
-#  write_csv(submission, "submission.csv")
 
 ## ----kaggle-2, echo=FALSE, fig.cap="Resulting Kaggle RMSLE score."----
 knitr::include_graphics("leaderboard_orig.png")

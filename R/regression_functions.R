@@ -6,17 +6,22 @@ globalVariables(c(
 
 #' Get regression table
 #'
-#' Output regression table for an \code{lm()} regression in "tidy" format. This function
-#' is a wrapper function for \code{broom::tidy()} and includes confidence
+#' Output regression table for an `lm()` regression in "tidy" format. This function
+#' is a wrapper function for `broom::tidy()` and includes confidence
 #' intervals in the output table by default.
 #'
-#' @param model an \code{lm()} model object
+#' @param model an `lm()` model object
+#' @inheritParams broom::tidy.lm
 #' @param digits number of digits precision in output table
 #' @param print If TRUE, return in print format suitable for R Markdown
+#' @param default_categorical_levels If TRUE, do not change the non-baseline
+#'  categorical variables in the term column. Otherwise non-baseline 
+#'  categorical variables will be displayed in the format 
+#'  "categorical_variable_name: level_name"
 #'
 #' @return A tibble-formatted regression table along with lower and upper end
-#' points of all confidence intervals for all parameters \code{lower_ci} and
-#' \code{upper_ci}.
+#' points of all confidence intervals for all parameters `lower_ci` and
+#' `upper_ci`; the confidence levels default to 95\%. 
 #' @importFrom stats lm
 #' @importFrom stats predict
 #' @importFrom formula.tools lhs
@@ -26,7 +31,7 @@ globalVariables(c(
 #' @importFrom janitor clean_names
 #' @importFrom knitr kable
 #' @export
-#' @seealso \code{\link[broom:reexports]{tidy}}, \code{\link{get_regression_points}}, \code{\link{get_regression_summaries}}
+#' @seealso [`tidy()`][broom::reexports], [get_regression_points()], [get_regression_summaries()]
 #'
 #' @examples
 #' library(moderndive)
@@ -36,7 +41,10 @@ globalVariables(c(
 #'
 #' # Get regression table:
 #' get_regression_table(mpg_model)
-get_regression_table <- function(model, digits = 3, print = FALSE) {
+#' 
+#' # Vary confidence level of confidence intervals
+#' get_regression_table(mpg_model, conf.level = 0.99)
+get_regression_table <- function(model, conf.level = 0.95, digits = 3, print = FALSE, default_categorical_levels = FALSE) {
   # Check inputs
   input_checks(model, digits, print)
 
@@ -47,10 +55,11 @@ get_regression_table <- function(model, digits = 3, print = FALSE) {
   explanatory_variable <- formula(model) %>%
     rhs() %>%
     all.vars()
+  cat_explanatory_variable <- names(model[["xlevels"]])
 
   # Create output tibble
   regression_table <- model %>%
-    tidy(conf.int = TRUE) %>%
+    tidy(conf.int = TRUE, conf.level) %>%
     mutate_if(is.numeric, round, digits = digits) %>%
     mutate(term = ifelse(term == "(Intercept)", "intercept", term)) %>%
     as_tibble() %>%
@@ -58,7 +67,8 @@ get_regression_table <- function(model, digits = 3, print = FALSE) {
     rename(
       lower_ci = conf_low,
       upper_ci = conf_high
-    )
+    ) %>% mutate(term = extract_cat_names(term, cat_explanatory_variable,
+                                          default_categorical_levels))
 
   # Transform to markdown
   if (print) {
@@ -72,20 +82,20 @@ get_regression_table <- function(model, digits = 3, print = FALSE) {
 
 #' Get regression points
 #'
-#' Output information on each point/observation used in an \code{lm()} regression in
-#' "tidy" format. This function is a wrapper function for \code{broom::augment()}
+#' Output information on each point/observation used in an `lm()` regression in
+#' "tidy" format. This function is a wrapper function for `broom::augment()`
 #' and renames the variables to have more intuitive names.
 #'
 #' @inheritParams get_regression_table
-#' @param newdata A new data frame of points/observations to apply \code{model} to
+#' @param newdata A new data frame of points/observations to apply `model` to
 #' obtain new fitted values and/or predicted values y-hat. Note the format of
-#' \code{newdata} must match the format of the original \code{data} used to fit
-#' \code{model}.
+#' `newdata` must match the format of the original `data` used to fit
+#' `model`.
 #' @param ID A string indicating which variable in either the original data used to fit
-#' \code{model} or \code{newdata} should be used as
+#' `model` or `newdata` should be used as
 #' an identification variable to distinguish the observational units
 #' in each row. This variable will be the left-most variable in the output data
-#' frame. If \code{ID} is unspecified, a column \code{ID} with values 1 through the number of
+#' frame. If `ID` is unspecified, a column `ID` with values 1 through the number of
 #' rows is returned as the identification variable.
 #'
 #' @return A tibble-formatted regression table of outcome/response variable,
@@ -110,7 +120,7 @@ get_regression_table <- function(model, digits = 3, print = FALSE) {
 #' @importFrom rlang sym
 #' @importFrom rlang ":="
 #' @export
-#' @seealso \code{\link[broom:reexports]{augment}}, \code{\link{get_regression_table}}, \code{\link{get_regression_summaries}}
+#' @seealso [`augment()`][broom::reexports], [get_regression_table()], [get_regression_summaries()]
 #'
 #' @examples
 #' library(dplyr)
@@ -237,12 +247,12 @@ get_regression_points <-
 
 #' Get regression summary values
 #'
-#' Output scalar summary statistics for an \code{lm()} regression in "tidy"
-#' format. This function is a wrapper function for \code{broom::glance()}.
+#' Output scalar summary statistics for an `lm()` regression in "tidy"
+#' format. This function is a wrapper function for `broom::glance()`.
 #'
 #' @inheritParams get_regression_table
 #'
-#' @return A single-row tibble with regression summaries. Ex: \code{r_squared} and \code{mse}.
+#' @return A single-row tibble with regression summaries. Ex: `r_squared` and `mse`.
 #' @importFrom dplyr select
 #' @importFrom dplyr rename_at
 #' @importFrom dplyr vars
@@ -262,7 +272,7 @@ get_regression_points <-
 #' @importFrom janitor clean_names
 #' @importFrom knitr kable
 #' @export
-#' @seealso \code{\link[broom:reexports]{glance}}, \code{\link{get_regression_table}}, \code{\link{get_regression_points}}
+#' @seealso [`glance()`][broom::reexports], [get_regression_table()], [get_regression_points()]
 #'
 #' @examples
 #' library(moderndive)
@@ -313,10 +323,47 @@ get_regression_summaries <-
   }
 
 
+# Extract explanatory categorical variable levels ----
+
+# helper function to escape regex characters from a variable name
+remove_re_char <- function(string){
+  # taken from the `escapeRegex` function in the Hmisc package
+  gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", string)
+}
+
+extract_cat_names <- function(term, cat_names, default_categorical_levels) {
+    if ((!default_categorical_levels) & (length(cat_names) > 0)) {
+      # if none of the x variables are categorical, do nothing
+      # only change how we display non-baseline levels of categorical variables
+      # if at least one of the x variables are categorical AND the user
+      # does not want the default categorical levels
+      
+      # we need to handle the case where a factor is defined within the regression
+      # equation
+      cat_names <- remove_re_char(cat_names)
+      cat_names <- cat_names[order(nchar(cat_names), decreasing = T)]
+      
+      # the xlevels should only be matched at the beginning of the term
+      matches <-
+        as.character(stringr::str_extract(term, paste0("(", "^", cat_names, ")", collapse = "|")))
+      not_matched <- c(1, which(is.na(matches)))
+      # force intercept term to always be in the not_matched group
+      if (length(matches) > 0) {
+        matches <-
+          paste0(matches, ": ", stringr::str_sub(term, nchar(matches) + 1, nchar(term)))
+        matches[not_matched] <- term[not_matched]
+        return(matches)
+      } else{
+        return(term)
+      }
+    } else {
+      return(term)
+    }
+  }
 
 
 # Check input functions ----
-input_checks <- function(model, digits = 3, print = FALSE) {
+input_checks <- function(model, digits = 3, print = FALSE, default_categorical_levels= FALSE) {
   # Since the `"glm"` class also contains the `"lm"` class
   if (length(class(model)) != 1 | !("lm" %in% class(model))) {
     stop(paste(
@@ -327,6 +374,7 @@ input_checks <- function(model, digits = 3, print = FALSE) {
   }
   check_numeric(digits)
   check_logical(print)
+  check_logical(default_categorical_levels)
 }
 
 check_numeric <- function(input) {

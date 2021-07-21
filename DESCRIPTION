@@ -1,7 +1,7 @@
 Package: moderndive
 Type: Package
 Title: Tidyverse-Friendly Introductory Linear Regression
-Version: 0.5.1
+Version: 0.5.2
 Authors@R: c(
     person("Albert Y.", "Kim", email = "albert.ys.kim@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7824-306X")),
     person("Chester", "Ismay", email = "chester.ismay@gmail.com", role = "aut", comment = c(ORCID = "0000-0003-2820-2547")),
@@ -22,11 +22,11 @@ BugReports: https://github.com/moderndive/moderndive/issues
 Imports: magrittr, dplyr, ggplot2, tibble, janitor, broom (>= 0.4.3),
         formula.tools, stringr, knitr, infer, rlang (>= 0.2.0), glue
 RoxygenNote: 7.1.1
-Suggests: testthat, covr, rmarkdown, vdiffr, ggplot2movies, openintro,
-        patchwork, viridis, readr
+Suggests: testthat, covr, rmarkdown, vdiffr, openintro, patchwork,
+        viridis, readr
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2021-01-08 18:25:32 UTC; rudeboybert
+Packaged: 2021-07-21 12:44:41 UTC; akim04
 Author: Albert Y. Kim [aut, cre] (<https://orcid.org/0000-0001-7824-306X>),
   Chester Ismay [aut] (<https://orcid.org/0000-0003-2820-2547>),
   Andrew Bray [ctb] (<https://orcid.org/0000-0002-4037-7414>),
@@ -35,4 +35,4 @@ Author: Albert Y. Kim [aut, cre] (<https://orcid.org/0000-0001-7824-306X>),
   Will Hopper [ctb] (<https://orcid.org/0000-0002-7848-1946>),
   Marium Tapal [ctb] (<https://orcid.org/0000-0001-5093-6462>)
 Repository: CRAN
-Date/Publication: 2021-01-09 00:20:02 UTC
+Date/Publication: 2021-07-21 13:10:02 UTC

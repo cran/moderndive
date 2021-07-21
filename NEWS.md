@@ -1,10 +1,16 @@
+# moderndive 0.5.2
+
+* Changed printing of non-baseline categorical variable levels in regression table to be cleaner #102
+* Added explicit `conf.level` argument to `get_regression_table()` inherited from `broom::tidy.lm()`
+* Improved main package vignette based on feedback from @lwjohnst86 & @lisamr
+* Added JOSE publication in `vignettes/paper.md`
+* Fixed `pkgdown` and `covr` issues, defragged documentation.
+
+
+
 # moderndive 0.5.1
 
 * Use vdiffr conditionally
-
-
-
-***
 
 
 
@@ -19,10 +25,6 @@
 
 
 
-***
-
-
-
 # moderndive 0.4.0
 
 * Added `geom_parallel_slopes()` geom extension to `ggplot2` package to plot parallel slopes regression models with one numerical and one categorical variable (this is not possible using `ggplot2::geom_smooth()`). Note this renders `gg_parallel_slopes()` function added in v0.3.0 obsolete.
@@ -31,10 +33,6 @@
 * `get_correlation()` now:
     + Respects `dplyr::group_by()` grouping
     + Can handle missing data by either passing `na.rm = TRUE` argument or by passing standard `stats:cor(use = "complete.obs")` argument via `...`
-
-
-
-***
 
 
 
@@ -58,10 +56,6 @@ observational units/rows
 
 
 
-***
-
-
-
 # moderndive 0.2.0
 
 Updated package for:
@@ -81,15 +75,11 @@ Details:
 * Removed `tidyverse` from Depends, Imports, or Suggests
 
 
-***
-
 
 # moderndive 0.1.1
 
 Fixed broken url in `?bowl_samples`
 
-
-***
 
 
 # moderndive 0.1.0

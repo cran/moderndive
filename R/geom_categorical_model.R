@@ -1,14 +1,18 @@
 #' Regression model with one categorical explanatory/predictor variable
 #'
-#' \code{geom_categorical_model()} fits a regression model using the categorical
+#' `geom_categorical_model()` fits a regression model using the categorical
 #' x axis as the explanatory variable, and visualizes the model's fitted values
 #' as piecewise horizontal line segments. Confidence interval bands can be
-#' included in the visualization of the model. Like \code{\link{geom_parallel_slopes}},
-#' this function has the same nature as \code{geom_smooth()} from
-#' the {ggplot2} package, but provides functionality that \code{geom_smooth()}
-#' currently doesn't have.
+#' included in the visualization of the model. Like [geom_parallel_slopes()],
+#' this function has the same nature as `geom_smooth()` from
+#' the {ggplot2} package, but provides functionality that `geom_smooth()`
+#' currently doesn't have. When using a categorical predictor variable, 
+#' the intercept corresponds to the mean for the baseline group, while
+#' coefficients for the non-baseline groups are offsets from this baseline. 
+#' Thus in the visualization the baseline for comparison group's median is 
+#' marked with a solid line, whereas all offset groups' medians are marked with dashed lines. 
 #'
-#' @param se Display confidence interval around model lines? \code{TRUE} by
+#' @param se Display confidence interval around model lines? `TRUE` by
 #'   default.
 #'
 #' @param level Level of confidence interval to use (0.95 by default).
@@ -16,7 +20,7 @@
 #' @inheritParams ggplot2::layer
 #' @inheritParams ggplot2::geom_smooth
 #'
-#' @seealso \code{\link{geom_parallel_slopes}}
+#' @seealso [geom_parallel_slopes()]
 #' @export
 #'
 #' @examples
@@ -27,6 +31,14 @@
 #'   geom_point() +
 #'   geom_categorical_model()
 #' p
+#' 
+#' # In the above visualization, the solid line corresponds to the mean of 19.2
+#' # for the baseline group "4", whereas the dashed lines correspond to the
+#' # means of 28.19 and 21.02 for the non-baseline groups "f" and "r" respectively.
+#' # In the corresponding regression table however the coefficients for "f" and "r"
+#' # are presented as offsets from the mean for "4":
+#' model <- lm(hwy ~ drv, data = mpg)
+#' get_regression_table(model)
 #'
 #' # You can use different colors for each categorical level
 #' p %+% aes(color = drv)

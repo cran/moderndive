@@ -8,7 +8,7 @@
 #' the explanatory variable name on the right
 #' @param na.rm a logical value indicating whether NA values should be stripped
 #' before the computation proceeds.
-#' @param ... further arguments passed to \code{\link[stats]{cor}}
+#' @param ... further arguments passed to [stats::cor()]
 #'
 #' @return A 1x1 data frame storing the correlation value
 #' @importFrom magrittr "%>%"
@@ -104,7 +104,7 @@ check_formula_args <- function(data, formula,
 
   if (length(explanatory_variable) > 1) {
     stop(paste(
-      "The left hand side of the `formula` should only have one",
+      "The right hand side of the `formula` should only have one",
       "variable name"
     ))
   }
