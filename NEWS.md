@@ -1,3 +1,10 @@
+# moderndive 0.5.3
+
+* Added `alaska_flights` consisting of Alaska Airlines subset of `nycflights13::flights`
+
+
+
+
 # moderndive 0.5.2
 
 * Changed printing of non-baseline categorical variable levels in regression table to be cleaner #102
@@ -60,7 +67,7 @@ observational units/rows
 
 Updated package for:
 
-- Use in DataCamp's [Modeling with Data in the Tidyverse](https://www.datacamp.com/courses/modeling-with-data-in-the-tidyverse), in particular added `evals` and `house_prices` datasets and updated `get_regression_table()` and `get_regression_points()` functions. 
+- Use in DataCamp's Modeling with Data in the Tidyverse, in particular added `evals` and `house_prices` datasets and updated `get_regression_table()` and `get_regression_points()` functions. 
 - v0.4.0 of [ModernDive](https://moderndive.com/) textbook
 
 Details:

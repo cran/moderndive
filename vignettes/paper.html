@@ -11,7 +11,7 @@
 
 <meta name="author" content="Albert Y. Kim, Chester Ismay, and Max Kuhn" />
 
-<meta name="date" content="2021-07-21" />
+<meta name="date" content="2022-01-19" />
 
 <title>Take a moderndive into introductory linear regression with R</title>
 
@@ -351,14 +351,14 @@ pre code {
 
 <h1 class="title toc-ignore">Take a <code>moderndive</code> into introductory linear regression with R</h1>
 <h4 class="author">Albert Y. Kim, Chester Ismay, and Max Kuhn</h4>
-<h4 class="date">2021-07-21</h4>
+<h4 class="date">2022-01-19</h4>
 
 </div>
 
 
 <div id="summary" class="section level1">
 <h1>Summary</h1>
-<p>We present the <a href="https://moderndive.github.io/moderndive/" target="_blank"><code>moderndive</code></a> R package of datasets and functions for <a href="https://www.tidyverse.org/">tidyverse</a>-friendly introductory linear regression <span class="citation">(Wickham, Averick, et al. 2019)</span>. These tools leverage the well-developed <code>tidyverse</code> and <code>broom</code> packages to facilitate 1) working with regression tables that include confidence intervals, 2) accessing regression outputs on an observation level (e.g. fitted/predicted values and residuals), 3) inspecting scalar summaries of regression fit (e.g. <span class="math inline">\(R^2\)</span>, <span class="math inline">\(R^2_{adj}\)</span>, and mean squared error), and 4) visualizing parallel slopes regression models using <code>ggplot2</code>-like syntax <span class="citation">(Wickham, Chang, et al. 2019; Robinson and Hayes 2019)</span>. This R package is designed to supplement the book “Statistical Inference via Data Science: A ModernDive into R and the Tidyverse” <span class="citation">(Ismay and Kim 2019)</span>. Note that the book is also available online at <a href="https://moderndive.com" class="uri">https://moderndive.com</a> and is referred to as “ModernDive” for short.</p>
+<p>We present the <a href="https://moderndive.github.io/moderndive/" target="_blank"><code>moderndive</code></a> R package of datasets and functions for <a href="https://www.tidyverse.org/">tidyverse</a>-friendly introductory linear regression <span class="citation">(Wickham, Averick, et al. 2019)</span>. These tools leverage the well-developed <code>tidyverse</code> and <code>broom</code> packages to facilitate 1) working with regression tables that include confidence intervals, 2) accessing regression outputs on an observation level (e.g. fitted/predicted values and residuals), 3) inspecting scalar summaries of regression fit (e.g. <span class="math inline">\(R^2\)</span>, <span class="math inline">\(R^2_{adj}\)</span>, and mean squared error), and 4) visualizing parallel slopes regression models using <code>ggplot2</code>-like syntax <span class="citation">(Wickham, Chang, et al. 2019; Robinson and Hayes 2019)</span>. This R package is designed to supplement the book “Statistical Inference via Data Science: A ModernDive into R and the Tidyverse” <span class="citation">(Ismay and Kim 2019)</span>. Note that the book is also available online at <a href="https://moderndive.com" class="uri">https://moderndive.com</a> and is referred to as “ModernDive” for short.</p>
 </div>
 <div id="statement-of-need" class="section level1">
 <h1>Statement of Need</h1>
@@ -470,7 +470,7 @@ library(broom)</code></pre>
 ## (Intercept)  4.461932   0.126778  35.195   &lt;2e-16 ***
 ## age         -0.005938   0.002569  -2.311   0.0213 *  
 ## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Residual standard error: 0.5413 on 461 degrees of freedom
 ## Multiple R-squared:  0.01146,    Adjusted R-squared:  0.009311 
@@ -482,14 +482,14 @@ library(broom)</code></pre>
 <ol style="list-style-type: decimal">
 <li><p>Get a tidy regression table <strong>with confidence intervals</strong>:</p>
 <pre class="r"><code>get_regression_table(score_model)
-## # A tibble: 2 x 7
+## # A tibble: 2 × 7
 ##   term      estimate std_error statistic p_value lower_ci upper_ci
 ##   &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
 ## 1 intercept    4.46      0.127     35.2    0        4.21     4.71 
 ## 2 age         -0.006     0.003     -2.31   0.021   -0.011   -0.001</code></pre></li>
 <li><p>Get information on each point/observation in your regression, including fitted/predicted values and residuals, in a single data frame:</p>
 <pre class="r"><code>get_regression_points(score_model)
-## # A tibble: 463 x 5
+## # A tibble: 463 × 5
 ##       ID score   age score_hat residual
 ##    &lt;int&gt; &lt;dbl&gt; &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt;
 ##  1     1   4.7    36      4.25    0.452
@@ -505,7 +505,7 @@ library(broom)</code></pre>
 ## # … with 453 more rows</code></pre></li>
 <li><p>Get scalar summaries of a regression fit including <span class="math inline">\(R^2\)</span> and <span class="math inline">\(R^2_{adj}\)</span> but also the (root) mean-squared error:</p>
 <pre class="r"><code>get_regression_summaries(score_model)
-## # A tibble: 1 x 9
+## # A tibble: 1 × 9
 ##   r_squared adj_r_squared   mse  rmse sigma statistic p_value    df
 ##       &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
 ## 1     0.011         0.009 0.292 0.540 0.541      5.34   0.021     1
@@ -570,7 +570,7 @@ Visualization of parallel slopes model.
 <p>American Statistical Association Undergraduate Guidelines Workgroup. 2016. “‘Guidelines for Assessment and Instruction in Statistics Education (GAISE) in Statistics Education (GAISE) College Report College Report 2016’.” Alexandria, VA: American Statistical Association.</p>
 </div>
 <div id="ref-diez2015openintro">
-<p>Diez, D.M., C.D. Barr, and M. Çetinkaya-Rundel. 2015. <em>OpenIntro Statistics</em>. OpenIntro, Incorporated. <a href="https://doi.org/10.5070/T573020084">https://doi.org/10.5070/T573020084</a>.</p>
+<p>Diez, D. M., C. D. Barr, and M. Çetinkaya-Rundel. 2015. <em>OpenIntro Statistics</em>. OpenIntro, Incorporated. <a href="https://doi.org/10.5070/T573020084">https://doi.org/10.5070/T573020084</a>.</p>
 </div>
 <div id="ref-ismay2019moderndive">
 <p>Ismay, Chester., and Albert Y. Kim. 2019. <em>Statistical Inference via Data Science: A Moderndive into R and the Tidyverse</em>. Chapman &amp; Hall/Crc the R Series. CRC Press. <a href="https://doi.org/10.1080/00224065.2020.1848366">https://doi.org/10.1080/00224065.2020.1848366</a>.</p>
@@ -589,8 +589,8 @@ Visualization of parallel slopes model.
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>For details on the remaining 5 variables, see the help file by running <code>?evals</code>.<a href="#fnref1" class="footnote-back">↩</a></p></li>
-<li id="fn2"><p>Note that <code>gender</code> was collected as a binary variable at the time of the study (2005).<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p>For details on the remaining 5 variables, see the help file by running <code>?evals</code>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Note that <code>gender</code> was collected as a binary variable at the time of the study (2005).<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
