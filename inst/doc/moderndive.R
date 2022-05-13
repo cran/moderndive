@@ -145,7 +145,7 @@ new_prof <- tibble(age = c(39, 42))
 get_regression_points(score_model, newdata = new_prof)
 
 ## ----kaggle-2, echo=FALSE, fig.cap="Resulting Kaggle RMSLE score."----
-knitr::include_graphics("leaderboard_orig.png")
+knitr::include_graphics("leaderboard_orig.jpeg")
 
 ## ---- echo=FALSE----------------------------------------------------
 summary(score_model)
