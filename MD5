@@ -1,6 +1,6 @@
-bde6de9a4f6152d98314c4971bd250c4 *DESCRIPTION
+c2dbd775ba939079f016b241b748e36a *DESCRIPTION
 a219f45efff4e5a16a25a766d9810973 *NAMESPACE
-2dd6a78bf3928963920c7a1dec97cc79 *NEWS.md
+4dcc7e9d4de885e21495a8f865cf30e0 *NEWS.md
 244b4cb65969ca74189d264a0f31f8e2 *R/datasets.R
 539c9bab05173aff5fea74a465fa10d7 *R/geom_categorical_model.R
 7be88b9e76d3174cffb1b64c5ab2bdcd *R/geom_parallel_slopes.R
@@ -11,8 +11,8 @@ d4f8f7ff935580e7e680547d4ed6272a *R/ggplot_parallel_slopes.R
 c275334c03ea72ad3d76c5367f5fc3af *R/rep_sample_n.R
 ba049c50a871e9ca37307b4f01759060 *R/utilities.R
 4e50b183bef56de3ffb39547b0648832 *R/utils-pipe.R
-8ee184b68f187b3497fa2e4d2cfc446f *build/partial.rdb
-df5c80324246141726a63e6d2aad9100 *build/vignette.rds
+ea124a494ad7922985532ad3b308e4d5 *build/partial.rdb
+d6d1574d9eade130ac9fdd6991e7dc18 *build/vignette.rds
 7dd4fbcd1d18e94ef6042486b961c459 *data/DD_vs_SB.rda
 360b43d636aa1b6d55c08c7340cfea7c *data/MA_schools.rda
 10ce6d48255e3fc2716b8e6c6fddf2e1 *data/alaska_flights.rda
@@ -44,7 +44,7 @@ a633194d8f091fcd06a0bbd79687d6f8 *data/tactile_prop_red.rda
 8ff9b52e1cad37ddacae2025c8a99ed4 *inst/CITATION
 df24c7def1f29bd2abf4ea135220e283 *inst/doc/moderndive.R
 383223b71114ab3d6865dc186be913b2 *inst/doc/moderndive.Rmd
-ac4c8ef1e557f6c1765509493ca9c612 *inst/doc/moderndive.html
+2d0120f3ef8fd722ffda82dbec5215d6 *inst/doc/moderndive.html
 3795e542b583d8f5876e7c6073925ac5 *inst/doc/paper.R
 cd4fad45d9e80f26bb38184e492cf0db *inst/doc/paper.Rmd
 fd6ff242764ed3a4ddf42f5ec4c3ca2a *inst/doc/paper.pdf
@@ -69,8 +69,8 @@ d614d43744371b3fbae49bfc4736cfa9 *man/figures/interaction-and-parallel-slopes-mo
 8fc8a3216c205a26777bf9f0aa50bf1f *man/figures/residuals-1-1.png
 41f5034318c306bf77abf2a7ee36eb31 *man/figures/residuals-2-1.png
 b8344b4c7359f0f3a01f6aa05ee15cc7 *man/figures/unnamed-chunk-7-1.png
-5e9f033d0c2cdae7cbcbbd092af6643e *man/geom_categorical_model.Rd
-4df305b62be72554e476384c5c41eec9 *man/geom_parallel_slopes.Rd
+fe0c0fcb7668c551e75e04460cad2056 *man/geom_categorical_model.Rd
+57efef5620058cbf6f591454800b0456 *man/geom_parallel_slopes.Rd
 92ebe8294ccf3e0eb0e4aa7aef105d9b *man/get_correlation.Rd
 d75e78de81f17f9f476ff07439655c7d *man/get_regression_points.Rd
 4312f55340775604f8a01007c7ef8a6f *man/get_regression_summaries.Rd
@@ -117,7 +117,7 @@ f3a6d3cc125faeb0d1e42d02e24fb35e *tests/figs/test-geom-parallel-slopes/geom-para
 f8402c82a06f90740458b4ac1cfddc4d *tests/testthat.R
 d9a7d5e06f4322eac9e14fddf2d6c974 *tests/testthat/helper-utils.R
 e3f26dcabc490f95f394d1debbbbda21 *tests/testthat/test-geom_parallel_slopes.R
-076df20de72f0a2a8d4198d82b25ea8b *tests/testthat/test-get_regression_functions.R
+816a07d11d2c7098ae6cee9483e39e4f *tests/testthat/test-get_regression_functions.R
 e8e59e49656b095bd60df03b046fee21 *tests/testthat/test-rep_sample_n.R
 cc37e4d02938a6952917b59f2cf090f2 *tests/testthat/test_geom_categorical_model.R
 1304b527f63519a8cb35d415ae1d9a2b *tests/testthat/test_get_correlation.R
@@ -128,5 +128,5 @@ cc37e4d02938a6952917b59f2cf090f2 *tests/testthat/test_geom_categorical_model.R
 383223b71114ab3d6865dc186be913b2 *vignettes/moderndive.Rmd
 cd4fad45d9e80f26bb38184e492cf0db *vignettes/paper.Rmd
 c7007b6ea5e882f6e1ad6d4c28f65461 *vignettes/paper.bib
-1253b6df284601f4ba4aed81618ca684 *vignettes/paper.html
+d57b2a3675bffad61669da79e1b2c14a *vignettes/paper.html
 ed756f6025dae50773f7e4e3cccfe8a3 *vignettes/paper.md

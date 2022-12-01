@@ -1,3 +1,10 @@
+# moderndive 0.5.5
+
+* Addressing `broom` reverse dependency issue https://github.com/moderndive/moderndive/issues/128
+
+
+
+
 # moderndive 0.5.4
 
 * Added `early_january_weather` consisting of January subset of `nycflights13::weather`
