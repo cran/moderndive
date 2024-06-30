@@ -1,4 +1,4 @@
-## ---- include = FALSE-----------------------------------------------
+## ----include = FALSE------------------------------------------------
 # knitr settings
 knitr::opts_chunk$set(
   # Code output:
@@ -49,7 +49,7 @@ library(dplyr)
 library(knitr)
 library(broom)
 
-## ---- echo=FALSE----------------------------------------------------
+## ----echo=FALSE-----------------------------------------------------
 evals_sample <- evals %>%
   select(ID, prof_ID, score, age, bty_avg, gender, ethnicity, language, rank) %>%
   sample_n(5)

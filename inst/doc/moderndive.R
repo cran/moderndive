@@ -1,4 +1,4 @@
-## ---- include = FALSE-----------------------------------------------
+## ----include = FALSE------------------------------------------------
 # knitr settings
 knitr::opts_chunk$set(
   # Code output:
@@ -49,7 +49,7 @@ library(dplyr)
 library(knitr)
 library(broom)
 
-## ---- echo=FALSE----------------------------------------------------
+## ----echo=FALSE-----------------------------------------------------
 evals_sample <- evals %>%
   select(ID, prof_ID, score, age, bty_avg, gender, ethnicity, language, rank) %>%
   sample_n(5)
@@ -107,23 +107,23 @@ get_regression_table(score_model)$std_error
 get_regression_table(score_model) %>%
   kable()
 
-## ---- eval=FALSE----------------------------------------------------
+## ----eval=FALSE-----------------------------------------------------
 #  fitted(score_model)
 
-## ---- echo=FALSE----------------------------------------------------
+## ----echo=FALSE-----------------------------------------------------
 fitted(score_model)[1:10]
 
-## ---- eval=FALSE----------------------------------------------------
+## ----eval=FALSE-----------------------------------------------------
 #  residuals(score_model)
 
-## ---- echo=FALSE----------------------------------------------------
+## ----echo=FALSE-----------------------------------------------------
 residuals(score_model)[1:10]
 
-## ---- eval=FALSE----------------------------------------------------
+## ----eval=FALSE-----------------------------------------------------
 #  score_model_points <- get_regression_points(score_model)
 #  score_model_points
 
-## ---- echo=FALSE----------------------------------------------------
+## ----echo=FALSE-----------------------------------------------------
 score_model_points <- get_regression_points(score_model)
 score_model_points %>%
   slice(1:10)
@@ -147,7 +147,7 @@ get_regression_points(score_model, newdata = new_prof)
 ## ----kaggle-2, echo=FALSE, fig.cap="Resulting Kaggle RMSLE score."----
 knitr::include_graphics("leaderboard_orig.jpeg")
 
-## ---- echo=FALSE----------------------------------------------------
+## ----echo=FALSE-----------------------------------------------------
 summary(score_model)
 
 ## -------------------------------------------------------------------
@@ -166,7 +166,7 @@ p2 <- ggplot(evals, aes(x = age, y = score, color = ethnicity)) +
   theme(axis.title.y = element_blank())
 p1 + p2
 
-## ---- eval=TRUE-----------------------------------------------------
+## ----eval=TRUE------------------------------------------------------
 # Regression table for interaction model:
 interaction_evals <- lm(score ~ age * ethnicity, data = evals)
 get_regression_table(interaction_evals)
@@ -175,7 +175,7 @@ get_regression_table(interaction_evals)
 parallel_slopes_evals <- lm(score ~ age + ethnicity, data = evals)
 get_regression_table(parallel_slopes_evals)
 
-## ---- eval=FALSE----------------------------------------------------
+## ----eval=FALSE-----------------------------------------------------
 #  # Code to plot interaction and parallel slopes models for MA_schools
 #  ggplot(
 #    MA_schools,
