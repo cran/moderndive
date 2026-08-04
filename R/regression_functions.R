@@ -6,22 +6,25 @@ globalVariables(c(
 
 #' Get regression table
 #'
-#' Output regression table for an `lm()` regression in "tidy" format. This function
-#' is a wrapper function for `broom::tidy()` and includes confidence
-#' intervals in the output table by default.
+#' Output regression table for an `lm()` or `glm()` model in "tidy" format.
+#' This function is a wrapper function for `broom::tidy()` and includes
+#' confidence intervals in the output table by default.
 #'
-#' @param model an `lm()` model object
+#' @param model an `lm()` or `glm()` model object
 #' @inheritParams broom::tidy.lm
 #' @param digits number of digits precision in output table
 #' @param print If TRUE, return in print format suitable for R Markdown
 #' @param default_categorical_levels If TRUE, do not change the non-baseline
-#'  categorical variables in the term column. Otherwise non-baseline 
-#'  categorical variables will be displayed in the format 
-#'  "categorical_variable_name: level_name"
+#'  categorical variables in the term column. Otherwise non-baseline
+#'  categorical variables will be displayed in the format
+#'  "categorical_variable_name-level_name"
+#' @param exponentiate If TRUE, exponentiate the coefficient estimates and
+#'  confidence intervals. Useful for `glm()` models with log or logit links
+#'  (returns rate or odds ratios respectively). Default `FALSE`.
 #'
 #' @return A tibble-formatted regression table along with lower and upper end
 #' points of all confidence intervals for all parameters `lower_ci` and
-#' `upper_ci`; the confidence levels default to 95\%. 
+#' `upper_ci`; the confidence levels default to 95\%.
 #' @importFrom stats lm
 #' @importFrom stats predict
 #' @importFrom formula.tools lhs
@@ -30,6 +33,9 @@ globalVariables(c(
 #' @importFrom tibble as_tibble
 #' @importFrom janitor clean_names
 #' @importFrom knitr kable
+#' @importFrom purrr imap
+#' @importFrom stringr str_replace_all
+#' @importFrom stringr coll
 #' @export
 #' @seealso [`tidy()`][broom::reexports], [get_regression_points()], [get_regression_summaries()]
 #'
@@ -37,29 +43,25 @@ globalVariables(c(
 #' library(moderndive)
 #'
 #' # Fit lm() regression:
-#' mpg_model <- lm(mpg ~ cyl, data = mtcars)
+#' life_exp_model <- lm(
+#'   life_expectancy_2022 ~ gdp_per_capita,
+#'   data = un_member_states_2024
+#' )
 #'
 #' # Get regression table:
-#' get_regression_table(mpg_model)
-#' 
+#' get_regression_table(life_exp_model)
+#'
 #' # Vary confidence level of confidence intervals
-#' get_regression_table(mpg_model, conf.level = 0.99)
-get_regression_table <- function(model, conf.level = 0.95, digits = 3, print = FALSE, default_categorical_levels = FALSE) {
-  # Check inputs
-  input_checks(model, digits, print)
+#' get_regression_table(life_exp_model, conf.level = 0.99)
+get_regression_table <- function(model, conf.level = 0.95, digits = 3,
+                                 print = FALSE,
+                                 default_categorical_levels = FALSE,
+                                 exponentiate = FALSE) {
+  input_checks(model, digits, print, default_categorical_levels)
+  check_logical(exponentiate)
 
-  # Define outcome and explanatory/predictor variables
-  outcome_variable <- formula(model) %>%
-    lhs() %>%
-    all.vars()
-  explanatory_variable <- formula(model) %>%
-    rhs() %>%
-    all.vars()
-  cat_explanatory_variable <- names(model[["xlevels"]])
-
-  # Create output tibble
   regression_table <- model %>%
-    tidy(conf.int = TRUE, conf.level) %>%
+    tidy(conf.int = TRUE, conf.level = conf.level, exponentiate = exponentiate) %>%
     mutate_if(is.numeric, round, digits = digits) %>%
     mutate(term = ifelse(term == "(Intercept)", "intercept", term)) %>%
     as_tibble() %>%
@@ -67,16 +69,24 @@ get_regression_table <- function(model, conf.level = 0.95, digits = 3, print = F
     rename(
       lower_ci = conf_low,
       upper_ci = conf_high
-    ) %>% mutate(term = extract_cat_names(term, cat_explanatory_variable,
-                                          default_categorical_levels))
+    )
 
-  # Transform to markdown
-  if (print) {
-    regression_table <- regression_table %>%
-      kable()
+  # Apply factor-level pretty-printing to the `term` column directly. Doing
+  # this AFTER `tidy()` (rather than mutating `model$coefficients` names)
+  # avoids breaking `broom::tidy(glm, conf.int = TRUE)`, which calls
+  # `confint.glm` → `profile.glm`; the profile refits rely on the original
+  # coefficient names internally.
+  if (!default_categorical_levels && length(model[["xlevels"]]) > 0) {
+    delim <- "-"
+    old_names <- unlist(imap(model[["xlevels"]], ~ paste0(.y, .x)))
+    new_names <- unlist(imap(model[["xlevels"]], ~ paste0(.y, delim, .x)))
+    names(new_names) <- old_names
+    regression_table$term <- str_replace_all(regression_table$term, coll(new_names))
   }
 
-  return(regression_table)
+  if (print) regression_table <- kable(regression_table)
+
+  regression_table
 }
 
 
@@ -91,12 +101,12 @@ get_regression_table <- function(model, conf.level = 0.95, digits = 3, print = F
 #' obtain new fitted values and/or predicted values y-hat. Note the format of
 #' `newdata` must match the format of the original `data` used to fit
 #' `model`.
-#' @param ID A string indicating which variable in either the original data used to fit
-#' `model` or `newdata` should be used as
+#' @param ID A string indicating which variable in either the original data used
+#'  to fit `model` or `newdata` should be used as
 #' an identification variable to distinguish the observational units
 #' in each row. This variable will be the left-most variable in the output data
-#' frame. If `ID` is unspecified, a column `ID` with values 1 through the number of
-#' rows is returned as the identification variable.
+#' frame. If `ID` is unspecified, a column `ID` with values 1 through the number 
+#' of rows is returned as the identification variable.
 #'
 #' @return A tibble-formatted regression table of outcome/response variable,
 #' all explanatory/predictor variables, the fitted/predicted value, and residual.
@@ -109,143 +119,155 @@ get_regression_table <- function(model, conf.level = 0.95, digits = 3, print = F
 #' @importFrom dplyr everything
 #' @importFrom dplyr mutate_if
 #' @importFrom dplyr summarise
+#' @importFrom dplyr bind_cols
 #' @importFrom stats formula
+#' @importFrom stats fitted
+#' @importFrom stats model.frame
 #' @importFrom formula.tools lhs
 #' @importFrom formula.tools rhs
 #' @importFrom broom augment
 #' @importFrom tibble as_tibble
+#' @importFrom tibble tibble
 #' @importFrom janitor clean_names
+#' @importFrom janitor make_clean_names
 #' @importFrom stringr str_c
 #' @importFrom knitr kable
 #' @importFrom rlang sym
 #' @importFrom rlang ":="
 #' @importFrom stats na.omit
+#' @importFrom stats terms
 #' @export
 #' @seealso [`augment()`][broom::reexports], [get_regression_table()], [get_regression_summaries()]
 #'
 #' @examples
 #' library(dplyr)
-#' library(tibble)
-#'
-#' # Convert rownames to column
-#' mtcars <- mtcars %>%
-#'   rownames_to_column(var = "automobile")
+#' library(moderndive)
 #'
 #' # Fit lm() regression:
-#' mpg_model <- lm(mpg ~ cyl, data = mtcars)
+#' life_exp_model <- lm(
+#'   life_expectancy_2022 ~ gdp_per_capita,
+#'   data = un_member_states_2024
+#' )
 #'
 #' # Get information on all points in regression:
-#' get_regression_points(mpg_model, ID = "automobile")
+#' get_regression_points(life_exp_model, ID = "country")
 #'
-#' # Create training and test set based on mtcars:
-#' training_set <- mtcars %>%
+#' # Create training and test set based on un_member_states_2024:
+#' training_set <- un_member_states_2024 %>%
 #'   sample_frac(0.5)
-#' test_set <- mtcars %>%
-#'   anti_join(training_set, by = "automobile")
+#' test_set <- un_member_states_2024 %>%
+#'   anti_join(training_set, by = "country")
 #'
 #' # Fit model to training set:
-#' mpg_model_train <- lm(mpg ~ cyl, data = training_set)
+#' life_exp_model_train <- lm(
+#'   life_expectancy_2022 ~ gdp_per_capita,
+#'   data = training_set
+#' )
 #'
 #' # Make predictions on test set:
-#' get_regression_points(mpg_model_train, newdata = test_set, ID = "automobile")
+#' get_regression_points(life_exp_model_train, newdata = test_set, ID = "country")
 get_regression_points <-
   function(model, digits = 3, print = FALSE, newdata = NULL, ID = NULL) {
-    # Check inputs
     input_checks(model, digits, print)
-    if (!is.null(ID)) {
-      check_character(ID)
-    }
-    if (!is.null(newdata)) {
-      check_data_frame(newdata)
-    }
+    if (!is.null(ID)) check_character(ID)
+    if (!is.null(newdata)) check_data_frame(newdata)
 
-    # Define outcome and explanatory/predictor variables
-    outcome_variable <- formula(model) %>%
-      lhs() %>%
-      all.vars()
-    outcome_variable_hat <- str_c(outcome_variable, "_hat")
-    explanatory_variable <- formula(model) %>%
-      rhs() %>%
-      all.vars()
+    oi     <- outcome_info(model)
+    pvars  <- predictor_vars(model)
+    src    <- original_model_data(model)
+    is_glm <- inherits(model, "glm")
 
-    # Compute all fitted/predicted values and residuals for three possible
-    # cases/scenarios
     if (is.null(newdata)) {
-      # Case 1: For the same data set used to fit model, compute fitted values
-      # and residuals
-      regression_points <- model %>%
-        augment() %>%
-        select(!!c(outcome_variable, explanatory_variable, ".fitted", ".resid")) %>%
-        rename_at(vars(".fitted"), ~outcome_variable_hat) %>%
-        rename(residual = .resid)
-    } else {
-      # Two cases when we wanted to return point information on a new data set,
-      # newdata, different than the one used to fit the model with:
-      if (outcome_variable %in% names(newdata)) {
-        # Case 2.a) If outcome variable is included, we can compute both fitted
-        # values and residuals.
-        regression_points <- newdata %>%
-          select(!!c(outcome_variable, explanatory_variable)) %>%
-          # Compute fitted values
-          mutate(y_hat = predict(model, newdata = newdata)) %>%
-          rename_at(vars("y_hat"), ~outcome_variable_hat) %>%
-          # Compute residuals
-          mutate(residual := !!sym(outcome_variable) - !!sym(outcome_variable_hat))
+      # Case 1: same data used to fit the model. Outcome is read from the
+      # model frame on the scale the model was fit on (possibly transformed
+      # for in-formula transforms like log(y)). For glm models, fitted
+      # values are on the response scale (e.g. probabilities for logistic
+      # regression) so residuals are y - p̂ rather than deviance residuals.
+      mf <- stats::model.frame(model)
+      fit <- if (is_glm) {
+        as.numeric(stats::predict(model, type = "response"))
       } else {
-        # Case 2.b) If outcome variable is not included, we can only return
-        # predicted values and not the residuals. This corresponds to typical
-        # prediction scenario.
-        regression_points <- model %>%
-          # Compute fitted values:
-          augment(newdata = newdata) %>%
-          select(!!c(explanatory_variable, ".fitted")) %>%
-          rename_at(vars(".fitted"), ~ str_c(outcome_variable, "_hat"))
+        as.numeric(stats::fitted(model))
+      }
+      outcome_vals <- as.numeric(mf[[1]])
+
+      pred_df <- predictor_columns(mf, src, pvars)
+
+      regression_points <- tibble::tibble(!!oi$name := outcome_vals) %>%
+        dplyr::bind_cols(pred_df)
+      regression_points[[oi$name_hat]] <- fit
+      regression_points$residual       <- outcome_vals - fit
+    } else {
+      # Case 2: predict on newdata. Predictors come from `newdata` so that
+      # in-formula transforms (poly, scale, I, log) don't leak basis or
+      # matrix columns into the output. For glm models, predictions are on
+      # the response scale.
+      missing_pvars <- setdiff(pvars, names(newdata))
+      if (length(missing_pvars) > 0) {
+        stop(
+          "`newdata` is missing required predictor variable(s): ",
+          paste(missing_pvars, collapse = ", ")
+        )
+      }
+
+      fit <- if (is_glm) {
+        as.numeric(stats::predict(model, newdata = newdata, type = "response"))
+      } else {
+        as.numeric(stats::predict(model, newdata = newdata))
+      }
+      pred_df <- newdata[, pvars, drop = FALSE]
+
+      if (all(oi$vars %in% names(newdata))) {
+        # 2a: outcome present — evaluate the LHS expression in `newdata` so
+        # that residuals are on the same scale as the fitted model.
+        outcome_vals <- as.numeric(eval(oi$expr, envir = newdata))
+        regression_points <- tibble::tibble(!!oi$name := outcome_vals) %>%
+          dplyr::bind_cols(pred_df)
+        regression_points[[oi$name_hat]] <- fit
+        regression_points$residual       <- outcome_vals - fit
+      } else {
+        # 2b: outcome missing — predicted values only.
+        regression_points <- tibble::as_tibble(pred_df)
+        regression_points[[oi$name_hat]] <- fit
       }
     }
 
-    # Set identification variable for three possible cases/scenarios
     if (is.null(ID)) {
-      # Case 1: If ID argument is not specified, set as ID variable as 1 through
-      # number of rows
       regression_points <- regression_points %>%
         na.omit() %>%
         mutate(ID = 1:n()) %>%
         select(ID, everything())
     } else {
-      # Two cases when ID argument is specified:
       if (is.null(newdata)) {
-        # Case 2.a) When computing fitted values and residuals for the same data
-        # used to fit the model, extract ID variable from original model fit.
-        identification_variable <- eval(model$call$data, environment(formula(model))) %>%
-          pull(!!ID)
+        if (is.null(src)) {
+          stop("Could not locate source data to extract ID column `", ID, "`.")
+        }
+        if (!(ID %in% names(src))) {
+          stop("ID column `", ID, "` not found in source data.")
+        }
+        mf <- stats::model.frame(model)
+        identification_variable <- src[rownames(mf), , drop = FALSE][[ID]]
       } else {
-        # Case 2.b) When computing predicted values for a new dataset newdata than
-        # the one used to fit the model, extract ID variable from newdata.
-        identification_variable <- newdata %>%
-          pull(!!ID)
+        if (!(ID %in% names(newdata))) {
+          stop("ID column `", ID, "` not found in `newdata`.")
+        }
+        identification_variable <- newdata[[ID]]
       }
-      # Set ID variable
       regression_points <- regression_points %>%
-        na.omit() %>%
         mutate(ID = identification_variable) %>%
+        na.omit() %>%
         select(ID, everything()) %>%
         rename_at(vars("ID"), ~ID)
     }
 
-    # Final clean-up
     regression_points <- regression_points %>%
       mutate_if(is.double, round, digits = digits) %>%
-      as_tibble()
+      tibble::as_tibble()
 
-    # Transform to markdown
-    if (print) {
-      regression_points <- regression_points %>%
-        kable()
-    }
+    if (print) regression_points <- knitr::kable(regression_points)
 
-    return(regression_points)
+    regression_points
   }
-
 
 
 #' Get regression summary values
@@ -274,6 +296,7 @@ get_regression_points <-
 #' @importFrom tibble as_tibble
 #' @importFrom janitor clean_names
 #' @importFrom knitr kable
+#' @importFrom stats residuals
 #' @export
 #' @seealso [`glance()`][broom::reexports], [get_regression_table()], [get_regression_points()]
 #'
@@ -281,98 +304,114 @@ get_regression_points <-
 #' library(moderndive)
 #'
 #' # Fit lm() regression:
-#' mpg_model <- lm(mpg ~ cyl, data = mtcars)
+#' life_exp_model <- lm(
+#'   life_expectancy_2022 ~ gdp_per_capita,
+#'   data = un_member_states_2024
+#' )
 #'
 #' # Get regression summaries:
-#' get_regression_summaries(mpg_model)
+#' get_regression_summaries(life_exp_model)
 get_regression_summaries <-
   function(model, digits = 3, print = FALSE) {
-    # Check inputs
     input_checks(model, digits, print)
+    is_glm <- inherits(model, "glm")
 
-    # Define outcome and explanatory/predictor variables
-    outcome_variable <- formula(model) %>%
-      lhs() %>%
-      all.vars()
-    explanatory_variable <- formula(model) %>%
-      rhs() %>%
-      all.vars()
+    res <- if (is_glm) {
+      as.numeric(stats::residuals(model, type = "response"))
+    } else {
+      as.numeric(stats::residuals(model))
+    }
+    mse_val <- mean(res^2, na.rm = TRUE)
+    mse_and_rmse <- tibble::tibble(mse = mse_val, rmse = sqrt(mse_val))
 
-    # Compute mean-squared error and root mean-squared error
-    mse_and_rmse <- model %>%
-      augment() %>%
-      select(!!c(outcome_variable, explanatory_variable, ".fitted", ".resid")) %>%
-      rename_at(vars(".fitted"), ~ str_c(outcome_variable, "_hat")) %>%
-      rename(residual = .resid) %>%
-      summarise(mse = mean(residual^2), rmse = sqrt(mse))
-
-    # Create output tibble
-    regression_summaries <- model %>%
-      glance() %>%
-      mutate_if(is.numeric, round, digits = digits) %>%
-      select(-c(AIC, BIC, deviance, df.residual, logLik)) %>%
-      as_tibble() %>%
-      clean_names() %>%
-      bind_cols(mse_and_rmse) %>%
-      select(r_squared, adj_r_squared, mse, rmse, everything())
-
-    # Transform to markdown
-    if (print) {
-      regression_summaries <- regression_summaries %>%
-        kable()
+    if (is_glm) {
+      # glm has no R^2 / sigma / F-statistic. Keep the deviance/AIC/BIC
+      # columns broom::glance() returns for glm models instead.
+      regression_summaries <- model %>%
+        glance() %>%
+        mutate_if(is.numeric, round, digits = digits) %>%
+        as_tibble() %>%
+        clean_names() %>%
+        bind_cols(mse_and_rmse) %>%
+        select(mse, rmse, everything())
+    } else {
+      regression_summaries <- model %>%
+        glance() %>%
+        mutate_if(is.numeric, round, digits = digits) %>%
+        select(-c(AIC, BIC, deviance, df.residual, logLik)) %>%
+        as_tibble() %>%
+        clean_names() %>%
+        bind_cols(mse_and_rmse) %>%
+        select(r_squared, adj_r_squared, mse, rmse, everything())
     }
 
-    return(regression_summaries)
+    if (print) regression_summaries <- kable(regression_summaries)
+
+    regression_summaries
   }
 
 
-# Extract explanatory categorical variable levels ----
+# Internal helpers for transform-aware extraction ----
 
-# helper function to escape regex characters from a variable name
-remove_re_char <- function(string){
-  # taken from the `escapeRegex` function in the Hmisc package
-  gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", string)
+# Resolve the LHS of the model formula into pieces we need: original variable
+# name(s), the deparsed expression call, and a sanitized column name. For an
+# untransformed LHS like `mpg`, `name` is the bare variable so existing output
+# is unchanged. For a transformed LHS like `log(mpg)`, `name` is
+# `make_clean_names()` of the expression (e.g. "log_mpg").
+outcome_info <- function(model) {
+  lhs_expr <- formula.tools::lhs(formula(model))
+  expr_str <- paste(deparse(lhs_expr), collapse = "")
+  lhs_vars <- all.vars(lhs_expr)
+  transformed <- !(length(lhs_vars) == 1L && identical(expr_str, lhs_vars))
+  name <- if (transformed) {
+    janitor::make_clean_names(expr_str)
+  } else {
+    lhs_vars[1]
+  }
+  list(
+    expr     = lhs_expr,
+    vars     = lhs_vars,
+    name     = name,
+    name_hat = paste0(name, "_hat")
+  )
 }
 
-extract_cat_names <- function(term, cat_names, default_categorical_levels) {
-    if ((!default_categorical_levels) & (length(cat_names) > 0)) {
-      # if none of the x variables are categorical, do nothing
-      # only change how we display non-baseline levels of categorical variables
-      # if at least one of the x variables are categorical AND the user
-      # does not want the default categorical levels
-      
-      # we need to handle the case where a factor is defined within the regression
-      # equation
-      cat_names <- remove_re_char(cat_names)
-      cat_names <- cat_names[order(nchar(cat_names), decreasing = T)]
-      
-      # the xlevels should only be matched at the beginning of the term
-      matches <-
-        as.character(stringr::str_extract(term, paste0("(", "^", cat_names, ")", collapse = "|")))
-      not_matched <- c(1, which(is.na(matches)))
-      # force intercept term to always be in the not_matched group
-      if (length(matches) > 0) {
-        matches <-
-          paste0(matches, ": ", stringr::str_sub(term, nchar(matches) + 1, nchar(term)))
-        matches[not_matched] <- term[not_matched]
-        return(matches)
-      } else{
-        return(term)
-      }
-    } else {
-      return(term)
-    }
-  }
+# Original predictor variable names from the RHS, e.g. for
+# `mpg ~ poly(hp, 2)` returns "hp".
+predictor_vars <- function(model) {
+  formula(model) %>%
+    formula.tools::rhs() %>%
+    all.vars()
+}
 
+# Try to recover the data frame the model was fit on. Returns NULL if the
+# original data isn't reachable (e.g. fit with anonymous data).
+original_model_data <- function(model) {
+  tryCatch(
+    eval(model$call$data, environment(formula(model))),
+    error = function(e) NULL
+  )
+}
+
+# Predictor columns to include in get_regression_points() output. Prefer the
+# original (untransformed) columns from the source data, aligned to the rows
+# that survived na.omit during fitting. If we can't reach the source data,
+# fall back to the model frame minus the outcome.
+predictor_columns <- function(mf, src, pvars) {
+  if (!is.null(src) && all(pvars %in% names(src))) {
+    out <- src[rownames(mf), pvars, drop = FALSE]
+    rownames(out) <- NULL
+    return(out)
+  }
+  mf[, -1, drop = FALSE]
+}
 
 # Check input functions ----
-input_checks <- function(model, digits = 3, print = FALSE, default_categorical_levels= FALSE) {
-  # Since the `"glm"` class also contains the `"lm"` class
-  if (length(class(model)) != 1 | !("lm" %in% class(model))) {
+input_checks <- function(model, digits = 3, print = FALSE,
+                         default_categorical_levels = FALSE) {
+  if (!inherits(model, "lm")) {
     stop(paste(
-      "Only simple linear regression",
-      "models are supported. Try again using only `lm()`",
-      "models as appropriate."
+      "Only `lm()` and `glm()` models are supported."
     ))
   }
   check_numeric(digits)

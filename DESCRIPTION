@@ -1,7 +1,7 @@
 Package: moderndive
 Type: Package
 Title: Tidyverse-Friendly Introductory Linear Regression
-Version: 0.7.0
+Version: 0.8.0
 Authors@R: c(
     person("Albert Y.", "Kim", email = "albert.ys.kim@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7824-306X")),
     person("Chester", "Ismay", email = "chester.ismay@gmail.com", role = "aut", comment = c(ORCID = "0000-0003-2820-2547")),
@@ -49,7 +49,7 @@ Authors@R: c(
     )
 Maintainer: Albert Y. Kim <albert.ys.kim@gmail.com>
 Description: Datasets and wrapper functions for tidyverse-friendly introductory linear regression, used in "Statistical Inference via Data Science: A ModernDive into R and the Tidyverse" available at <https://moderndive.com/>.
-Depends: R (>= 3.4.0)
+Depends: R (>= 4.1.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -58,29 +58,32 @@ URL: https://moderndive.github.io/moderndive/,
 BugReports: https://github.com/moderndive/moderndive/issues
 Imports: magrittr, dplyr, purrr, tidyr, ggplot2, tibble, janitor, broom
         (>= 0.4.3), formula.tools, stringr, knitr, infer, rlang (>=
-        0.2.0), glue
-RoxygenNote: 7.3.2
+        0.2.0), glue, DT
 Suggests: testthat, covr, rmarkdown, vdiffr, openintro, patchwork,
-        viridis, readr, nycflights13, nycflights23
+        viridis, readr, nycflights13, nycflights23, plotly
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0
 NeedsCompilation: no
-Packaged: 2024-09-01 20:28:30 UTC; akim04
-Author: Albert Y. Kim [aut, cre] (<https://orcid.org/0000-0001-7824-306X>),
-  Chester Ismay [aut] (<https://orcid.org/0000-0003-2820-2547>),
-  Andrew Bray [ctb] (<https://orcid.org/0000-0002-4037-7414>),
+Packaged: 2026-08-04 21:37:44 UTC; chesterismay
+Author: Albert Y. Kim [aut, cre] (ORCID:
+    <https://orcid.org/0000-0001-7824-306X>),
+  Chester Ismay [aut] (ORCID: <https://orcid.org/0000-0003-2820-2547>),
+  Andrew Bray [ctb] (ORCID: <https://orcid.org/0000-0002-4037-7414>),
   Delaney Moran [ctb],
-  Evgeni Chasnovski [ctb] (<https://orcid.org/0000-0002-1617-4019>),
-  Will Hopper [ctb] (<https://orcid.org/0000-0002-7848-1946>),
-  Benjamin S. Baumer [ctb] (<https://orcid.org/0000-0002-3279-0516>),
-  Marium Tapal [ctb] (<https://orcid.org/0000-0001-5093-6462>),
+  Evgeni Chasnovski [ctb] (ORCID:
+    <https://orcid.org/0000-0002-1617-4019>),
+  Will Hopper [ctb] (ORCID: <https://orcid.org/0000-0002-7848-1946>),
+  Benjamin S. Baumer [ctb] (ORCID:
+    <https://orcid.org/0000-0002-3279-0516>),
+  Marium Tapal [ctb] (ORCID: <https://orcid.org/0000-0001-5093-6462>),
   Wayne Ndlovu [ctb],
   Catherine Peppers [ctb],
   Annah Mutaya [ctb],
   Anushree Goswami [ctb],
-  Ziyue Yang [ctb] (<https://orcid.org/0000-0002-9299-8327>),
-  Clara Li [ctb] (<https://orcid.org/0000-0003-2456-0849>),
+  Ziyue Yang [ctb] (ORCID: <https://orcid.org/0000-0002-9299-8327>),
+  Clara Li [ctb] (ORCID: <https://orcid.org/0000-0003-2456-0849>),
   Caroline McKenna [ctb],
-  Catherine Park [ctb] (<https://orcid.org/0000-0002-8273-9620>),
+  Catherine Park [ctb] (ORCID: <https://orcid.org/0000-0002-8273-9620>),
   Abbie Benfield [ctb],
   Georgia Gans [ctb],
   Kacey Jean-Jacques [ctb],
@@ -91,10 +94,11 @@ Author: Albert Y. Kim [aut, cre] (<https://orcid.org/0000-0001-7824-306X>),
   Michelle Flesaker [ctb],
   Irene Foster [ctb],
   Aushanae Haller [ctb],
-  Benjamin Bruncati [ctb] (<https://orcid.org/0000-0001-8545-5984>),
-  Quinn White [ctb] (<https://orcid.org/0000-0001-5399-0237>),
-  Tianshu Zhang [ctb] (<https://orcid.org/0000-0002-3004-4472>),
-  Katelyn Diaz [ctb] (<https://orcid.org/0000-0001-6108-1682>),
+  Benjamin Bruncati [ctb] (ORCID:
+    <https://orcid.org/0000-0001-8545-5984>),
+  Quinn White [ctb] (ORCID: <https://orcid.org/0000-0001-5399-0237>),
+  Tianshu Zhang [ctb] (ORCID: <https://orcid.org/0000-0002-3004-4472>),
+  Katelyn Diaz [ctb] (ORCID: <https://orcid.org/0000-0001-6108-1682>),
   Rose Porta [ctb],
   Renee Wu [ctb],
   Arris Moise [ctb],
@@ -107,6 +111,6 @@ Author: Albert Y. Kim [aut, cre] (<https://orcid.org/0000-0001-7824-306X>),
   Hongtong Lin [ctb],
   Alejandra Munoz [ctb],
   Elina Gordon-Halpern [ctb],
-  Haley Schmidt [ctb] (<https://orcid.org/0000-0002-6184-2266>)
+  Haley Schmidt [ctb] (ORCID: <https://orcid.org/0000-0002-6184-2266>)
 Repository: CRAN
-Date/Publication: 2024-09-01 21:40:05 UTC
+Date/Publication: 2026-08-04 22:50:08 UTC

@@ -13,7 +13,7 @@ get_regression_points(
 )
 }
 \arguments{
-\item{model}{an \code{lm()} model object}
+\item{model}{an \code{lm()} or \code{glm()} model object}
 
 \item{digits}{number of digits precision in output table}
 
@@ -24,12 +24,12 @@ obtain new fitted values and/or predicted values y-hat. Note the format of
 \code{newdata} must match the format of the original \code{data} used to fit
 \code{model}.}
 
-\item{ID}{A string indicating which variable in either the original data used to fit
-\code{model} or \code{newdata} should be used as
+\item{ID}{A string indicating which variable in either the original data used
+to fit \code{model} or \code{newdata} should be used as
 an identification variable to distinguish the observational units
 in each row. This variable will be the left-most variable in the output data
-frame. If \code{ID} is unspecified, a column \code{ID} with values 1 through the number of
-rows is returned as the identification variable.}
+frame. If \code{ID} is unspecified, a column \code{ID} with values 1 through the number
+of rows is returned as the identification variable.}
 }
 \value{
 A tibble-formatted regression table of outcome/response variable,
@@ -42,29 +42,31 @@ and renames the variables to have more intuitive names.
 }
 \examples{
 library(dplyr)
-library(tibble)
-
-# Convert rownames to column
-mtcars <- mtcars \%>\%
-  rownames_to_column(var = "automobile")
+library(moderndive)
 
 # Fit lm() regression:
-mpg_model <- lm(mpg ~ cyl, data = mtcars)
+life_exp_model <- lm(
+  life_expectancy_2022 ~ gdp_per_capita,
+  data = un_member_states_2024
+)
 
 # Get information on all points in regression:
-get_regression_points(mpg_model, ID = "automobile")
+get_regression_points(life_exp_model, ID = "country")
 
-# Create training and test set based on mtcars:
-training_set <- mtcars \%>\%
+# Create training and test set based on un_member_states_2024:
+training_set <- un_member_states_2024 \%>\%
   sample_frac(0.5)
-test_set <- mtcars \%>\%
-  anti_join(training_set, by = "automobile")
+test_set <- un_member_states_2024 \%>\%
+  anti_join(training_set, by = "country")
 
 # Fit model to training set:
-mpg_model_train <- lm(mpg ~ cyl, data = training_set)
+life_exp_model_train <- lm(
+  life_expectancy_2022 ~ gdp_per_capita,
+  data = training_set
+)
 
 # Make predictions on test set:
-get_regression_points(mpg_model_train, newdata = test_set, ID = "automobile")
+get_regression_points(life_exp_model_train, newdata = test_set, ID = "country")
 }
 \seealso{
 \code{\link[broom:reexports]{augment()}}, \code{\link[=get_regression_table]{get_regression_table()}}, \code{\link[=get_regression_summaries]{get_regression_summaries()}}

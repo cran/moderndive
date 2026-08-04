@@ -108,20 +108,20 @@ get_regression_table(score_model) %>%
   kable()
 
 ## ----eval=FALSE-----------------------------------------------------
-#  fitted(score_model)
+# fitted(score_model)
 
 ## ----echo=FALSE-----------------------------------------------------
 fitted(score_model)[1:10]
 
 ## ----eval=FALSE-----------------------------------------------------
-#  residuals(score_model)
+# residuals(score_model)
 
 ## ----echo=FALSE-----------------------------------------------------
 residuals(score_model)[1:10]
 
 ## ----eval=FALSE-----------------------------------------------------
-#  score_model_points <- get_regression_points(score_model)
-#  score_model_points
+# score_model_points <- get_regression_points(score_model)
+# score_model_points
 
 ## ----echo=FALSE-----------------------------------------------------
 score_model_points <- get_regression_points(score_model)
@@ -176,30 +176,30 @@ parallel_slopes_evals <- lm(score ~ age + ethnicity, data = evals)
 get_regression_table(parallel_slopes_evals)
 
 ## ----eval=FALSE-----------------------------------------------------
-#  # Code to plot interaction and parallel slopes models for MA_schools
-#  ggplot(
-#    MA_schools,
-#    aes(x = perc_disadvan, y = average_sat_math, color = size)
-#  ) +
-#    geom_point(alpha = 0.25) +
-#    labs(
-#      x = "% economically disadvantaged",
-#      y = "Math SAT Score",
-#      color = "School size"
-#    ) +
-#    geom_smooth(method = "lm", se = FALSE)
-#  
-#  ggplot(
-#    MA_schools,
-#    aes(x = perc_disadvan, y = average_sat_math, color = size)
-#  ) +
-#    geom_point(alpha = 0.25) +
-#    labs(
-#      x = "% economically disadvantaged",
-#      y = "Math SAT Score",
-#      color = "School size"
-#    ) +
-#    geom_parallel_slopes(se = FALSE)
+# # Code to plot interaction and parallel slopes models for MA_schools
+# ggplot(
+#   MA_schools,
+#   aes(x = perc_disadvan, y = average_sat_math, color = size)
+# ) +
+#   geom_point(alpha = 0.25) +
+#   labs(
+#     x = "% economically disadvantaged",
+#     y = "Math SAT Score",
+#     color = "School size"
+#   ) +
+#   geom_smooth(method = "lm", se = FALSE)
+# 
+# ggplot(
+#   MA_schools,
+#   aes(x = perc_disadvan, y = average_sat_math, color = size)
+# ) +
+#   geom_point(alpha = 0.25) +
+#   labs(
+#     x = "% economically disadvantaged",
+#     y = "Math SAT Score",
+#     color = "School size"
+#   ) +
+#   geom_parallel_slopes(se = FALSE)
 
 ## ----interaction-and-parallel-slopes-model-2, echo=FALSE, fig.height = 9/3, fig.cap = "Interaction (left) and parallel slopes (right) models."----
 p1 <- ggplot(MA_schools, aes(x = perc_disadvan, y = average_sat_math, color = size)) +
