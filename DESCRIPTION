@@ -1,7 +1,7 @@
 Package: moderndive
 Type: Package
 Title: Tidyverse-Friendly Introductory Linear Regression
-Version: 0.8.0
+Version: 0.8.1
 Authors@R: c(
     person("Albert Y.", "Kim", email = "albert.ys.kim@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7824-306X")),
     person("Chester", "Ismay", email = "chester.ismay@gmail.com", role = "aut", comment = c(ORCID = "0000-0003-2820-2547")),
@@ -64,7 +64,7 @@ Suggests: testthat, covr, rmarkdown, vdiffr, openintro, patchwork,
 VignetteBuilder: knitr
 Config/roxygen2/version: 8.0.0
 NeedsCompilation: no
-Packaged: 2026-08-04 21:37:44 UTC; chesterismay
+Packaged: 2026-10-30 00:09:22 UTC; chesterismay
 Author: Albert Y. Kim [aut, cre] (ORCID:
     <https://orcid.org/0000-0001-7824-306X>),
   Chester Ismay [aut] (ORCID: <https://orcid.org/0000-0003-2820-2547>),
@@ -113,4 +113,4 @@ Author: Albert Y. Kim [aut, cre] (ORCID:
   Elina Gordon-Halpern [ctb],
   Haley Schmidt [ctb] (ORCID: <https://orcid.org/0000-0002-6184-2266>)
 Repository: CRAN
-Date/Publication: 2026-08-04 22:50:08 UTC
+Date/Publication: 2026-10-30 09:50:14 UTC
